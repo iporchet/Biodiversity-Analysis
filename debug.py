@@ -1,3 +1,4 @@
+import csv
 import numpy as np
 import pandas as pan
 import matplotlib.pyplot as plt
@@ -6,7 +7,7 @@ list_of_animals = [] # Contains list of all animal objects
 
 #TODO: Create animal class object that creates animal with properties
 class Animal:
-    def __init__(self, category, scientific_name, common_names, conservation_status, park_name, observations):
+    def __init__(self, category, scientific_name, common_names, conservation_status='', park_name='', observations=''):
         self.category = category
         self.scientific_name = scientific_name
         self.common_names = common_names
@@ -27,31 +28,20 @@ class Animal:
 
 
 # reading csv file to obtain attributes to create animal class
-with open("python/Biodiversity_National_Park/species_info.csv", 'r') as species_info:
-    for x in species_info:
-        if "category,scientific_name" in x:
-            pass
-        else:
-            if x.count("\"") == 2:
-                common_names = []
-                new_animal = list(x.split(','))
+with open("python/Biodiversity_National_Park/observations.csv", 'r') as observations:
+    with open("python/Biodiversity_National_Park/species_info.csv", 'r') as species_info:
+        dict_reader_species = csv.DictReader(species_info)
+        dict_reader_obsvr = csv.DictReader(observations)
+        list_of_animals_counter = 0
 
-                for y in new_animal:
-                    if y[0] == "\"":
-                        indx1 = new_animal.index(y)
-
-                common_names.append(new_animal[indx1][1:])
-
-                for y in range(indx1+1, len(new_animal)):
-                    if "\"" in new_animal[y] and y != indx1:
-                        common_names.append(new_animal[y][:-1])
-                        break
-
-                    else:
-                        common_names.append(new_animal[y])
-
-                print(common_names)
+        for row1 in dict_reader_species:
+            list_of_animals.append(Animal(category=row1['category'], scientific_name=row1['scientific_name'], common_names=row1['common_names'], conservation_status=row1['conservation_status']))
             
+            for row in dict_reader_obsvr:
+                if row1['scientific_name'] == row['scientific_name']:
+                    
+                    list_of_animals[list_of_animals_counter].park_name = row['park_name']
+                    list_of_animals[list_of_animals_counter].observations = row['observations']
+                    list_of_animals_counter += 1
+                    break
 
-            else:
-                new_animal = list(x.split(','))
