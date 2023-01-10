@@ -44,4 +44,3 @@ with open("python/Biodiversity_National_Park/observations.csv", 'r') as observat
                     list_of_animals[list_of_animals_counter].observations = row['observations']
                     list_of_animals_counter += 1
                     break
-
